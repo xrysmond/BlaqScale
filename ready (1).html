@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ready</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Cinzel:wght@400;600;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--black:#000;--red:#9B1B2A;--red-glow:#C41230;--white:#F0EDE8}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--white);font-family:'Cormorant Garamond',serif;overflow-x:hidden;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:999}
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px 60px;position:relative;text-align:center}
+.brand{font-family:'Cinzel',serif;font-size:clamp(13px,3.5vw,16px);letter-spacing:.55em;color:var(--red);margin-bottom:36px;opacity:0;animation:fadeUp 1s ease forwards .4s}
+.hero-headline{font-weight:300;font-size:clamp(54px,14vw,82px);line-height:1.02;margin-bottom:34px}
+.hero-headline .line{display:block;overflow:hidden}
+.hero-headline .line span{display:block;opacity:0;transform:translateY(100%);animation:lineReveal 1s cubic-bezier(.16,1,.3,1) forwards}
+.hero-headline .line:nth-child(1) span{animation-delay:.9s}
+.hero-headline .line:nth-child(2) span{animation-delay:1.15s;color:var(--red);font-style:italic}
+.copy{max-width:760px;font-size:clamp(22px,5vw,30px);line-height:1.7;color:rgba(240,237,232,.62);opacity:0;animation:fadeUp 1s ease forwards 1.9s}
+.copy strong{color:var(--white);font-weight:400}.copy em{color:var(--red);font-style:italic}
+.buttons{margin-top:58px;opacity:0;animation:fadeUp 1s ease forwards 2.4s}
+.btn{font-family:'Cinzel',serif;font-size:clamp(10px,2.5vw,11px);letter-spacing:.32em;padding:17px 38px;text-decoration:none;display:inline-flex;align-items:center;transition:all .35s ease;position:relative;overflow:hidden;border:1px solid var(--red);background:var(--red);color:var(--white)}
+.btn span{position:relative;z-index:1}.btn::before{content:'';position:absolute;inset:0;background:var(--red-glow);opacity:0;transition:opacity .3s ease}.btn:hover::before{opacity:1}.btn:hover{box-shadow:0 0 28px rgba(155,27,42,.55)}
+@keyframes lineReveal{to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+<section class="hero">
+<span class="brand">READY</span>
+<h1 class="hero-headline">
+<span class="line"><span>You made</span></span>
+<span class="line"><span>your decision.</span></span>
+</h1>
+<p class="copy">And since you're a business operator. You should already know that <em>time is money</em>.<br><br>So don't waste more of it reading.<br><br><strong>Contact Waeven..</strong> and be sure that this is <em>smartest decision</em> you've ever made.</p>
+<div class="buttons">
+<a href="https://wa.me/966563194704" class="btn" target="_blank"><span>WHATSAPP</span></a>
+</div>
+</section>
+</body>
+</html>
