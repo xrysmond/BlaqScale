@@ -29,14 +29,15 @@
   /* STATIC ambient — no animation */
   .ambient{
   position:fixed;
-  bottom:-20%;
+  bottom:-18%;
   left:50%;
-  width:70vw;
-  height:50vh;
+  width:82vw;
+  height:58vh;
 
   background:radial-gradient(
     ellipse,
-    rgba(155,27,42,0.06) 0%,
+    rgba(155,27,42,0.13) 0%,
+    rgba(155,27,42,0.06) 32%,
     transparent 72%
   );
 
@@ -44,7 +45,7 @@
   z-index:0;
   will-change:transform, opacity;
 
-  animation:breatheGlow 8s ease-in-out infinite;
+  animation:breatheGlow 7s ease-in-out infinite;
   }
 
  .fog{
@@ -55,19 +56,26 @@
 
   background:
     radial-gradient(
-      circle at 30% 60%,
-      rgba(255,255,255,0.018),
-      transparent 28%
+      circle at 28% 62%,
+      rgba(255,255,255,0.04),
+      transparent 24%
     ),
     radial-gradient(
-      circle at 70% 40%,
-      rgba(255,255,255,0.012),
-      transparent 24%
+      circle at 72% 38%,
+      rgba(255,255,255,0.03),
+      transparent 22%
+    ),
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(255,255,255,0.015),
+      transparent 38%
     );
+
+  mix-blend-mode:soft-light;
 
   will-change:transform, opacity;
 
-  animation:fogDrift 18s ease-in-out infinite alternate;
+  animation:fogDrift 22s ease-in-out infinite alternate;
  }
 
  @keyframes breatheGlow{
@@ -77,20 +85,20 @@
   }
 
   50%{
-    opacity:.95;
-    transform:translateX(-50%) scale(1.13);
+    opacity:1;
+    transform:translateX(-50%) scale(1.18);
   }
 }
 
 @keyframes fogDrift{
   from{
-    transform:translate3d(-18px, 0, 0);
-    opacity:.45;
+    transform:translate3d(-26px, 0, 0);
+    opacity:.55;
   }
 
   to{
-    transform:translate3d(18px, -10px, 0);
-    opacity:.75;
+    transform:translate3d(26px, -14px, 0);
+    opacity:.9;
   }
 }
 
