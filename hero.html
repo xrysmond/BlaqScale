@@ -27,12 +27,72 @@
   }
 
   /* STATIC ambient — no animation */
-  .ambient {
-    position:fixed; bottom:-20%; left:50%; transform:translateX(-50%);
-    width:70vw; height:50vh;
-    background:radial-gradient(ellipse, rgba(155,27,42,0.05) 0%, transparent 70%);
-    pointer-events:none; z-index:0;
+  .ambient{
+  position:fixed;
+  bottom:-20%;
+  left:50%;
+  width:70vw;
+  height:50vh;
+
+  background:radial-gradient(
+    ellipse,
+    rgba(155,27,42,0.06) 0%,
+    transparent 72%
+  );
+
+  pointer-events:none;
+  z-index:0;
+  will-change:transform, opacity;
+
+  animation:breatheGlow 8s ease-in-out infinite;
   }
+
+ .fog{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+
+  background:
+    radial-gradient(
+      circle at 30% 60%,
+      rgba(255,255,255,0.018),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 70% 40%,
+      rgba(255,255,255,0.012),
+      transparent 24%
+    );
+
+  will-change:transform, opacity;
+
+  animation:fogDrift 18s ease-in-out infinite alternate;
+ }
+
+ @keyframes breatheGlow{
+  0%,100%{
+    opacity:.55;
+    transform:translateX(-50%) scale(1);
+  }
+
+  50%{
+    opacity:.95;
+    transform:translateX(-50%) scale(1.13);
+  }
+}
+
+@keyframes fogDrift{
+  from{
+    transform:translate3d(-18px, 0, 0);
+    opacity:.45;
+  }
+
+  to{
+    transform:translate3d(18px, -10px, 0);
+    opacity:.75;
+  }
+}
 
   /* STATIC arch line — fades in once, then static */
   .arch-line {
@@ -345,6 +405,7 @@
 
 <div class="vignette"></div>
 <div class="arch-line"></div>
+<div class="fog"></div>
 <div class="ambient"></div>
 
 <section class="hero">
