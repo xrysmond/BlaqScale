@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BlaqScale — Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Cinzel:wght@400;600;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+:root { --black:#050505; --red:#9B1B2A; --white:#F0EDE8; }
+
+html, body {
+  width:100%; min-height:100%;
+  background:var(--black); color:var(--white);
+  font-family:'Cormorant Garamond', serif;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+.grain {
+  position:fixed; inset:0; pointer-events:none; z-index:200;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+}
+.ambient {
+  position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:80vw; height:80vh;
+  background:radial-gradient(ellipse,rgba(155,27,42,.06) 0%,transparent 65%);
+  pointer-events:none; z-index:0;
+  animation:ambBreathe 6s ease-in-out infinite;
+}
+@keyframes ambBreathe {
+  0%,100%{opacity:.4;transform:translate(-50%,-50%) scale(.95)}
+  50%{opacity:1;transform:translate(-50%,-50%) scale(1.05)}
+}
+
+/* ══ SCREENS ══ */
+.screen {
+  position:fixed; inset:0; z-index:10;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  padding:clamp(24px,5vw,60px);
+  transition:opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);
+}
+.screen.hidden { opacity:0; pointer-events:none; transform:translateY(20px); }
+.screen.out    { opacity:0; pointer-events:none; transform:translateY(-20px); }
+
+/* ══ PASSWORD ══ */
+#pw-screen { background:var(--black); }
+.pw-inner { text-align:center; max-width:320px; width:100%; }
+.pw-brand {
+  font-family:'Cinzel',serif; font-size:9px; letter-spacing:.6em;
+  color:var(--red); display:block; margin-bottom:36px;
+  opacity:0; animation:fadeUp .8s ease forwards .2s;
+}
+.pw-title {
+  font-size:clamp(36px,9vw,50px); font-weight:300;
+  line-height:1.06; margin-bottom:8px;
+  opacity:0; animation:fadeUp .8s ease forwards .4s;
+}
+.pw-title em { font-style:italic; color:var(--red); }
+.pw-sub {
+  font-size:15px; color:rgba(240,237,232,.35); margin-bottom:44px;
+  font-style:italic; opacity:0; animation:fadeUp .8s ease forwards .6s;
+}
+.pw-field-wrap { opacity:0; animation:fadeUp .8s ease forwards .8s; }
+.pw-input {
+  width:100%; background:transparent;
+  border:none; border-bottom:1px solid rgba(155,27,42,.25);
+  color:var(--white); font-family:'Cormorant Garamond',serif;
+  font-size:20px; font-weight:300;
+  padding:12px 0; text-align:center; letter-spacing:.2em;
+  outline:none; transition:border-color .4s ease; margin-bottom:8px;
+}
+.pw-input:focus { border-bottom-color:var(--red); }
+.pw-error {
+  font-family:'Cinzel',serif; font-size:8px; letter-spacing:.4em;
+  color:var(--red); opacity:0; display:block; height:20px; line-height:20px;
+  transition:opacity .4s ease;
+}
+.pw-error.show { opacity:1; }
+.pw-btn {
+  width:100%; background:transparent;
+  border:1px solid rgba(155,27,42,.3);
+  color:rgba(240,237,232,.45); font-family:'Cinzel',serif;
+  font-size:9px; letter-spacing:.55em; padding:16px;
+  cursor:pointer; margin-top:28px;
+  position:relative; overflow:hidden;
+  transition:color .4s ease, border-color .4s ease;
+  opacity:0; animation:fadeUp .8s ease forwards 1s;
+}
+.pw-btn::before {
+  content:''; position:absolute; inset:0; background:var(--red); opacity:.07;
+  transform:scaleX(0); transform-origin:left;
+  transition:transform .5s cubic-bezier(.16,1,.3,1); z-index:0;
+}
+.pw-btn:hover::before { transform:scaleX(1); }
+.pw-btn:hover { border-color:var(--red); color:var(--white); }
+.pw-btn span { position:relative; z-index:1; }
+
+/* ══ SELECT SCREEN ══ */
+#select-screen {
+  overflow-y:auto; overflow-x:hidden;
+  align-items:flex-start; justify-content:flex-start; padding:0;
+}
+#select-screen::-webkit-scrollbar { display:none; }
+.select-wrap {
+  position:relative; z-index:10; max-width:680px; width:100%;
+  margin:0 auto; padding:80px clamp(20px,5vw,48px) 100px;
+}
+.select-header {
+  margin-bottom:64px; opacity:0; animation:fadeUp .9s ease forwards .2s;
+}
+.select-brand {
+  font-family:'Cinzel',serif; font-size:9px; letter-spacing:.6em;
+  color:var(--red); display:block; margin-bottom:16px;
+}
+.select-title {
+  font-size:clamp(36px,9vw,52px); font-weight:300; line-height:1.06;
+}
+.select-title em { font-style:italic; color:var(--red); }
+.select-sub {
+  font-size:13px; color:rgba(240,237,232,.25);
+  font-family:'Cinzel',serif; letter-spacing:.3em;
+  margin-top:10px; display:block;
+}
+.clients-grid {
+  display:flex; flex-direction:column; gap:1px;
+  background:rgba(155,27,42,.2);
+  opacity:0; animation:fadeUp .9s ease forwards .5s;
+}
+.client-card {
+  background:var(--black); padding:28px 24px;
+  cursor:pointer; display:flex; align-items:center; gap:20px;
+  position:relative; overflow:hidden;
+  border-left:2px solid transparent;
+  transition:background .4s ease, border-color .4s ease;
+}
+.client-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg,rgba(155,27,42,.3),transparent);
+}
+.client-card::after {
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(ellipse 60% 100% at 0% 50%,rgba(155,27,42,.06) 0%,transparent 70%);
+  opacity:0; transition:opacity .4s ease;
+}
+.client-card:hover { background:rgba(155,27,42,.04); border-left-color:var(--red); }
+.client-card:hover::after { opacity:1; }
+.client-card.locked {
+  opacity:.3; cursor:not-allowed; filter:grayscale(1);
+}
+.client-card.locked:hover { background:var(--black); border-left-color:transparent; }
+.client-card.locked:hover::after { opacity:0; }
+.client-dot {
+  width:6px; height:6px; border-radius:50%; background:var(--red);
+  flex-shrink:0; box-shadow:0 0 8px rgba(155,27,42,.6);
+  animation:dotPulse 2.5s ease-in-out infinite;
+}
+.client-dot.inactive { background:rgba(240,237,232,.15); box-shadow:none; animation:none; }
+@keyframes dotPulse {
+  0%,100%{box-shadow:0 0 4px rgba(155,27,42,.4)} 50%{box-shadow:0 0 14px rgba(155,27,42,1),0 0 24px rgba(155,27,42,.4)}
+}
+.client-info { flex:1; position:relative; z-index:1; }
+.client-name {
+  font-size:clamp(18px,4vw,22px); font-weight:300;
+  color:var(--white); display:block; margin-bottom:4px;
+}
+.client-company {
+  font-family:'Cinzel',serif; font-size:9px; letter-spacing:.25em;
+  color:rgba(240,237,232,.3);
+}
+.client-status {
+  font-family:'Cinzel',serif; font-size:8px; letter-spacing:.35em;
+  color:rgba(155,27,42,.8); flex-shrink:0; position:relative; z-index:1;
+}
+.client-arrow {
+  font-size:18px; color:rgba(240,237,232,.15); position:relative; z-index:1;
+  transition:color .3s ease, transform .3s ease;
+}
+.client-card:not(.locked):hover .client-arrow { color:rgba(155,27,42,.7); transform:translateX(4px); }
+
+/* ══ ADMIN SCREEN ══ */
+#admin-screen {
+  overflow-y:auto; overflow-x:hidden;
+  align-items:flex-start; justify-content:flex-start; padding:0;
+}
+#admin-screen::-webkit-scrollbar { display:none; }
+.admin-wrap {
+  position:relative; z-index:10; max-width:700px; width:100%;
+  margin:0 auto; padding:60px clamp(20px,5vw,48px) 100px;
+}
+.back-btn {
+  display:inline-flex; align-items:center; gap:10px;
+  background:transparent; border:none;
+  color:rgba(240,237,232,.3); font-family:'Cinzel',serif;
+  font-size:8px; letter-spacing:.4em;
+  cursor:pointer; margin-bottom:40px;
+  transition:color .3s ease; padding:0;
+}
+.back-btn:hover { color:rgba(155,27,42,.8); }
+.back-arrow { font-size:14px; transition:transform .3s ease; }
+.back-btn:hover .back-arrow { transform:translateX(-4px); }
+.admin-header { margin-bottom:48px; }
+.admin-brand {
+  font-family:'Cinzel',serif; font-size:9px; letter-spacing:.6em;
+  color:var(--red); display:block; margin-bottom:14px;
+}
+.admin-title {
+  font-size:clamp(32px,8vw,46px); font-weight:300; line-height:1.08;
+}
+.admin-title em { font-style:italic; color:var(--red); }
+.admin-client-name {
+  font-size:13px; color:rgba(240,237,232,.25);
+  font-family:'Cinzel',serif; letter-spacing:.3em;
+  margin-top:10px; display:block;
+}
+
+/* ── CARD ── */
+.card {
+  background:rgba(155,27,42,.04);
+  border:1px solid rgba(155,27,42,.25);
+  border-left:2px solid var(--red);
+  padding:28px 24px; margin-bottom:16px;
+  position:relative; overflow:hidden;
+}
+.card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg,var(--red),rgba(155,27,42,.1),transparent);
+}
+.card-title {
+  font-family:'Cinzel',serif; font-size:9px; letter-spacing:.5em;
+  color:var(--red); display:block; margin-bottom:24px;
+  padding-bottom:16px; border-bottom:1px solid rgba(155,27,42,.15);
+}
+
+/* ── FORM ── */
+.field { margin-bottom:18px; }
+.field-label {
+  font-family:'Cinzel',serif; font-size:8px; letter-spacing:.4em;
+  color:rgba(240,237,232,.5); display:block; margin-bottom:8px;
+}
+.field-input, .field-select, .field-textarea {
+  width:100%; background:rgba(0,0,0,.5);
+  border:1px solid rgba(155,27,42,.2);
+  color:var(--white); font-family:'Cormorant Garamond',serif;
+  font-size:18px; font-weight:300;
+  padding:12px 14px; outline:none;
+  transition:border-color .35s ease, box-shadow .35s ease;
+  -webkit-appearance:none;
+}
+.field-input:focus, .field-select:focus, .field-textarea:focus {
+  border-color:rgba(155,27,42,.6);
+  box-shadow:0 0 0 1px rgba(155,27,42,.1);
+}
+.field-input::placeholder, .field-textarea::placeholder { color:rgba(240,237,232,.2); }
+.field-select option { background:#111; }
+.field-textarea { resize:vertical; min-height:88px; line-height:1.65; }
+.field-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.field-row-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+
+/* ── BUTTONS ── */
+.action-btn {
+  width:100%; background:transparent;
+  border:1px solid rgba(155,27,42,.3);
+  color:rgba(240,237,232,.55); font-family:'Cinzel',serif;
+  font-size:9px; letter-spacing:.55em; padding:16px;
+  cursor:pointer; margin-top:8px;
+  position:relative; overflow:hidden;
+  transition:color .4s ease, border-color .4s ease;
+}
+.action-btn::before {
+  content:''; position:absolute; inset:0; background:var(--red); opacity:.07;
+  transform:scaleX(0); transform-origin:left;
+  transition:transform .5s cubic-bezier(.16,1,.3,1); z-index:0;
+}
+.action-btn:hover::before { transform:scaleX(1); }
+.action-btn:hover { border-color:var(--red); color:var(--white); }
+.action-btn span { position:relative; z-index:1; }
+.action-btn:disabled { opacity:.3; cursor:not-allowed; }
+.action-btn:disabled::before { display:none; }
+.action-btn.saving { pointer-events:none; }
+.action-btn.saving::after {
+  content:''; position:absolute; left:0; top:0; bottom:0;
+  background:rgba(155,27,42,.2);
+  animation:savingBar .9s ease-in-out infinite;
+}
+@keyframes savingBar {
+  0%{width:0;opacity:1} 70%{width:100%;opacity:1} 100%{width:100%;opacity:0}
+}
+.small-btn {
+  background:transparent; font-family:'Cinzel',serif;
+  font-size:7px; letter-spacing:.3em; padding:6px 12px;
+  cursor:pointer; transition:all .35s ease;
+  border:1px solid rgba(155,27,42,.2);
+  color:rgba(240,237,232,.4); white-space:nowrap;
+}
+.small-btn:hover { border-color:rgba(155,27,42,.6); color:rgba(240,237,232,.8); }
+.small-btn.undo { border-color:rgba(100,200,120,.2); color:rgba(100,200,120,.5); }
+.small-btn.undo:hover { border-color:rgba(100,200,120,.5); color:rgba(100,200,120,.8); }
+
+/* ── DIVIDER ── */
+.section-divider {
+  height:1px; margin:28px 0;
+  background:linear-gradient(90deg,rgba(155,27,42,.3),transparent);
+}
+
+/* ── LISTS ── */
+.update-row {
+  display:flex; align-items:flex-start; gap:12px;
+  padding:14px 0; border-bottom:1px solid rgba(155,27,42,.08);
+}
+.update-row:last-child { border-bottom:none; }
+.update-info { flex:1; }
+.update-info strong {
+  font-size:16px; font-weight:400; color:rgba(240,237,232,.85);
+  display:block; line-height:1.55;
+}
+.update-info span {
+  font-size:12px; color:rgba(240,237,232,.28);
+  font-style:italic; margin-top:4px; display:block;
+}
+.del-btn {
+  background:transparent; border:none;
+  color:rgba(155,27,42,.3); font-size:20px;
+  cursor:pointer; padding:0 4px;
+  transition:color .3s ease; flex-shrink:0; line-height:1;
+}
+.del-btn:hover { color:var(--red); }
+
+.invoice-row {
+  display:flex; align-items:center; gap:12px;
+  padding:16px 0; border-bottom:1px solid rgba(155,27,42,.08); flex-wrap:wrap;
+}
+.invoice-row:last-child { border-bottom:none; }
+.invoice-info { flex:1; min-width:120px; }
+.invoice-info strong {
+  font-size:17px; font-weight:400; color:var(--white); display:block;
+}
+.invoice-info span {
+  font-size:13px; color:rgba(240,237,232,.35);
+  font-style:italic; margin-top:3px; display:block;
+}
+.badge {
+  font-family:'Cinzel',serif; font-size:7px; letter-spacing:.3em;
+  padding:5px 10px; border:1px solid; flex-shrink:0;
+}
+.badge.pending { color:rgba(155,27,42,.9); border-color:rgba(155,27,42,.3); }
+.badge.paid    { color:rgba(100,200,120,.8); border-color:rgba(100,200,120,.3); }
+
+/* ── TOAST ── */
+.toast {
+  position:fixed; bottom:32px; left:50%;
+  transform:translateX(-50%) translateY(60px);
+  background:rgba(5,5,5,.97); border:1px solid rgba(155,27,42,.4);
+  font-family:'Cinzel',serif; font-size:8px; letter-spacing:.4em;
+  color:var(--white); padding:14px 28px; z-index:500;
+  transition:transform .45s cubic-bezier(.16,1,.3,1), opacity .45s ease;
+  opacity:0; white-space:nowrap; pointer-events:none;
+}
+.toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
+
+.empty-state {
+  font-size:14px; color:rgba(240,237,232,.2);
+  font-style:italic; padding:12px 0; display:block;
+}
+
+@keyframes fadeUp {
+  from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)}
+}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<div class="ambient"></div>
+<div class="toast" id="toast"></div>
+
+<!-- PASSWORD -->
+<div class="screen" id="pw-screen">
+  <div class="pw-inner">
+    <span class="pw-brand">BLAQSCALE</span>
+    <h1 class="pw-title">Admin<br><em>Panel</em></h1>
+    <p class="pw-sub">Authorized access only.</p>
+    <div class="pw-field-wrap">
+      <input class="pw-input" type="password" id="pw-input" placeholder="· · · · · · · ·" autocomplete="off">
+      <span class="pw-error" id="pw-error">INCORRECT</span>
+      <button class="pw-btn" id="pw-btn"><span>ENTER</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- CLIENT SELECT -->
+<div class="screen hidden" id="select-screen">
+  <div class="select-wrap">
+    <div class="select-header">
+      <span class="select-brand">BLAQSCALE — ADMIN</span>
+      <h1 class="select-title">Select<br><em>Client</em></h1>
+      <span class="select-sub">CHOOSE A CLIENT TO MANAGE</span>
+    </div>
+    <div class="clients-grid">
+      <div class="client-card" id="client-talha">
+        <div class="client-dot"></div>
+        <div class="client-info">
+          <span class="client-name">Talha Shahzad</span>
+          <span class="client-company">LIMOVIA GLOBAL</span>
+        </div>
+        <span class="client-status" id="talha-status">ONBOARDING</span>
+        <span class="client-arrow">→</span>
+      </div>
+      <div class="client-card locked">
+        <div class="client-dot inactive"></div>
+        <div class="client-info">
+          <span class="client-name" style="color:rgba(240,237,232,.25);">New Client</span>
+          <span class="client-company">COMING SOON</span>
+        </div>
+        <span class="client-arrow" style="opacity:.08;">→</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="screen hidden" id="admin-screen">
+  <div class="admin-wrap">
+
+    <button class="back-btn" id="back-btn">
+      <span class="back-arrow">←</span>
+      <span>ALL CLIENTS</span>
+    </button>
+
+    <div class="admin-header">
+      <span class="admin-brand">BLAQSCALE — ADMIN</span>
+      <h1 class="admin-title">Managing<br><em>Talha.</em></h1>
+      <span class="admin-client-name">LIMOVIA GLOBAL</span>
+    </div>
+
+    <!-- CAMPAIGN -->
+    <div class="card">
+      <span class="card-title">CAMPAIGN DATA</span>
+      <div class="field">
+        <span class="field-label">STATUS</span>
+        <select class="field-select" id="f-status">
+          <option value="Onboarding">Onboarding</option>
+          <option value="Setup">Setup</option>
+          <option value="Live">Live</option>
+          <option value="Optimising">Optimising</option>
+          <option value="Paused">Paused</option>
+          <option value="Completed">Completed</option>
+        </select>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <span class="field-label">REVENUE GENERATED (AED)</span>
+          <input class="field-input" type="number" id="f-revenue" placeholder="0">
+        </div>
+        <div class="field">
+          <span class="field-label">AD SPEND (AED)</span>
+          <input class="field-input" type="number" id="f-spend" placeholder="0">
+        </div>
+      </div>
+      <div class="field">
+        <span class="field-label">BOOKINGS (COUNT)</span>
+        <input class="field-input" type="number" id="f-bookings" placeholder="0">
+      </div>
+      <button class="action-btn" id="btn-save-campaign"><span>SAVE CAMPAIGN DATA</span></button>
+    </div>
+
+    <!-- UPDATES -->
+    <div class="card">
+      <span class="card-title">POST AN UPDATE</span>
+      <div class="field">
+        <span class="field-label">MESSAGE</span>
+        <textarea class="field-textarea" id="f-update-msg" placeholder="e.g. Campaign is live. First bookings coming in. ROAS holding at 4.2x."></textarea>
+      </div>
+      <button class="action-btn" id="btn-add-update"><span>POST UPDATE</span></button>
+      <div class="section-divider"></div>
+      <span class="field-label" style="display:block;margin-bottom:14px;">EXISTING UPDATES</span>
+      <div id="update-list"></div>
+    </div>
+
+    <!-- INVOICES -->
+    <div class="card">
+      <span class="card-title">INVOICES</span>
+      <div id="invoice-list"></div>
+      <div class="section-divider"></div>
+      <span class="field-label" style="display:block;margin-bottom:14px;">ADD NEW INVOICE</span>
+      <div class="field-row">
+        <div class="field">
+          <span class="field-label">DESCRIPTION</span>
+          <input class="field-input" type="text" id="f-inv-desc" placeholder="e.g. Monthly Fee — June">
+        </div>
+        <div class="field">
+          <span class="field-label">DATE</span>
+          <input class="field-input" type="text" id="f-inv-date" placeholder="e.g. June 2026">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <span class="field-label">AMOUNT (AED)</span>
+          <input class="field-input" type="number" id="f-inv-amount" placeholder="0">
+        </div>
+        <div class="field">
+          <span class="field-label">AMOUNT (USD)</span>
+          <input class="field-input" type="number" id="f-inv-usd" placeholder="0.00" step="0.01">
+        </div>
+      </div>
+      <button class="action-btn" id="btn-add-invoice"><span>ADD INVOICE</span></button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const WORKER_URL = 'https://blaqscale.xrysmond.deno.net';
+const AUTH_KEY   = 'bs_admin_token';
+
+let DATA = null;
+
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => {
+    if (!s.classList.contains('hidden')) {
+      s.classList.add('out');
+      setTimeout(() => { s.classList.add('hidden'); s.classList.remove('out'); }, 700);
+    }
+  });
+  const next = document.getElementById(id);
+  next.classList.remove('hidden');
+}
+
+function toast(msg, dur=2800) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), dur);
+}
+
+// ── INIT ──
+if (sessionStorage.getItem(AUTH_KEY)) {
+  document.getElementById('pw-screen').classList.add('hidden');
+  document.getElementById('select-screen').classList.remove('hidden');
+}
+
+document.getElementById('pw-btn').addEventListener('click', tryLogin);
+document.getElementById('pw-input').addEventListener('keydown', e => { if(e.key==='Enter') tryLogin(); });
+async function tryLogin() {
+  const val = document.getElementById('pw-input').value.trim();
+  if (!val) return;
+  try {
+    const res  = await fetch(WORKER_URL + '/auth', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({role:'admin', password:val})
+    });
+    if (!res.ok) throw new Error('bad');
+    const json = await res.json();
+    sessionStorage.setItem(AUTH_KEY, json.token);
+    document.getElementById('pw-error').classList.remove('show');
+    goTo('select-screen');
+  } catch(e) {
+    document.getElementById('pw-error').classList.add('show');
+    document.getElementById('pw-input').value = '';
+  }
+}
+
+document.getElementById('client-talha').addEventListener('click', () => {
+  goTo('admin-screen'); loadData();
+});
+
+document.getElementById('back-btn').addEventListener('click', () => goTo('select-screen'));
+
+// ── DATA ──
+async function loadData() {
+  try {
+    const res  = await fetch(WORKER_URL + '/data', {
+      headers: {'Authorization':'Bearer ' + sessionStorage.getItem(AUTH_KEY)}
+    });
+    DATA = await res.json();
+    renderAll();
+  } catch(e) { toast('FAILED TO LOAD'); }
+}
+
+async function saveData() {
+  const res = await fetch(WORKER_URL + '/data', {
+    method: 'PUT',
+    headers: {
+      'Content-Type':'application/json',
+      'Authorization':'Bearer ' + sessionStorage.getItem(AUTH_KEY)
+    },
+    body: JSON.stringify(DATA)
+  });
+  if (!res.ok) throw new Error('failed');
+}
+
+function renderAll() {
+  document.getElementById('f-status').value   = DATA.status || 'Onboarding';
+  document.getElementById('f-revenue').value  = DATA.revenue_generated || 0;
+  document.getElementById('f-spend').value    = DATA.ad_spend || 0;
+  document.getElementById('f-bookings').value = DATA.bookings || 0;
+
+  const statusEl = document.getElementById('talha-status');
+  if (statusEl) statusEl.textContent = (DATA.status || 'Onboarding').toUpperCase();
+
+  // Updates
+  const ul = document.getElementById('update-list');
+  if (DATA.updates && DATA.updates.length) {
+    ul.innerHTML = [...DATA.updates].reverse().map((u,i) => {
+      const realIdx = DATA.updates.length - 1 - i;
+      return `<div class="update-row">
+        <div class="update-info">
+          <strong>${u.message}</strong>
+          <span>${u.date}</span>
+        </div>
+        <button class="del-btn" onclick="deleteUpdate(${realIdx})">×</button>
+      </div>`;
+    }).join('');
+  } else {
+    ul.innerHTML = '<span class="empty-state">No updates yet.</span>';
+  }
+
+  // Invoices
+  const il = document.getElementById('invoice-list');
+  if (DATA.invoices && DATA.invoices.length) {
+    il.innerHTML = DATA.invoices.map((inv,i) => `
+      <div class="invoice-row">
+        <div class="invoice-info">
+          <strong>#${inv.number} — ${inv.description}</strong>
+          <span>${inv.amount_aed.toLocaleString()} AED · $${inv.amount_usd} · ${inv.date}</span>
+        </div>
+        <span class="badge ${inv.status.toLowerCase()}">${inv.status.toUpperCase()}</span>
+        ${inv.status.toLowerCase()==='pending'
+          ? `<button class="small-btn" onclick="markPaid(${i})">MARK PAID</button>`
+          : `<button class="small-btn undo" onclick="markPending(${i})">UNDO PAID</button>`
+        }
+      </div>`).join('');
+  } else {
+    il.innerHTML = '<span class="empty-state">No invoices yet.</span>';
+  }
+}
+
+// ── CAMPAIGN SAVE ──
+document.getElementById('btn-save-campaign').addEventListener('click', async function() {
+  this.classList.add('saving'); this.disabled = true;
+  DATA.status            = document.getElementById('f-status').value;
+  DATA.revenue_generated = parseFloat(document.getElementById('f-revenue').value) || 0;
+  DATA.ad_spend          = parseFloat(document.getElementById('f-spend').value) || 0;
+  DATA.bookings          = parseInt(document.getElementById('f-bookings').value) || 0;
+  try { await saveData(); toast('SAVED'); renderAll(); }
+  catch(e) { toast('SAVE FAILED'); }
+  this.classList.remove('saving'); this.disabled = false;
+});
+
+// ── ADD UPDATE ──
+document.getElementById('btn-add-update').addEventListener('click', async function() {
+  const msg = document.getElementById('f-update-msg').value.trim();
+  if (!msg) { toast('WRITE AN UPDATE FIRST'); return; }
+  this.classList.add('saving'); this.disabled = true;
+  const dateStr = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  if (!DATA.updates) DATA.updates = [];
+  DATA.updates.push({date:dateStr, message:msg});
+  try {
+    await saveData();
+    document.getElementById('f-update-msg').value = '';
+    toast('UPDATE POSTED'); renderAll();
+  } catch(e) { toast('SAVE FAILED'); }
+  this.classList.remove('saving'); this.disabled = false;
+});
+
+async function deleteUpdate(idx) {
+  DATA.updates.splice(idx,1);
+  try { await saveData(); toast('REMOVED'); renderAll(); }
+  catch(e) { toast('FAILED'); }
+}
+
+// ── ADD INVOICE ──
+document.getElementById('btn-add-invoice').addEventListener('click', async function() {
+  const desc   = document.getElementById('f-inv-desc').value.trim();
+  const amount = parseFloat(document.getElementById('f-inv-amount').value) || 0;
+  const usd    = parseFloat(document.getElementById('f-inv-usd').value) || 0;
+  const date   = document.getElementById('f-inv-date').value.trim();
+  if (!desc || !amount || !date) { toast('FILL IN ALL FIELDS'); return; }
+  this.classList.add('saving'); this.disabled = true;
+  if (!DATA.invoices) DATA.invoices = [];
+  const num = String(DATA.invoices.length + 1).padStart(3,'0');
+  DATA.invoices.push({number:num, description:desc, amount_aed:amount, amount_usd:usd, status:'Pending', date});
+  try {
+    await saveData();
+    document.getElementById('f-inv-desc').value   = '';
+    document.getElementById('f-inv-amount').value = '';
+    document.getElementById('f-inv-usd').value    = '';
+    document.getElementById('f-inv-date').value   = '';
+    toast('INVOICE ADDED'); renderAll();
+  } catch(e) { toast('SAVE FAILED'); }
+  this.classList.remove('saving'); this.disabled = false;
+});
+
+async function markPaid(idx) {
+  DATA.invoices[idx].status = 'Paid';
+  try { await saveData(); toast('MARKED AS PAID'); renderAll(); }
+  catch(e) { toast('FAILED'); }
+}
+
+async function markPending(idx) {
+  DATA.invoices[idx].status = 'Pending';
+  try { await saveData(); toast('REVERTED TO PENDING'); renderAll(); }
+  catch(e) { toast('FAILED'); }
+}
+</script>
+</body>
+</html>
