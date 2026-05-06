@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome — BlaqScale x Limovia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Cinzel:wght@400;600;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+:root { --black:#000; --red:#9B1B2A; --white:#F0EDE8; }
+
+html, body {
+  width:100%; min-height:100%;
+  background:var(--black); color:var(--white);
+  font-family:'Cormorant Garamond', serif;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+.grain {
+  position:fixed; inset:0; pointer-events:none; z-index:100;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+}
+
+.ambient {
+  position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:80vw; height:80vh;
+  background:radial-gradient(ellipse, rgba(155,27,42,0.07) 0%, transparent 65%);
+  pointer-events:none; z-index:0;
+  animation:ambBreathe 5s ease-in-out infinite;
+}
+@keyframes ambBreathe {
+  0%,100%{opacity:.5;transform:translate(-50%,-50%) scale(.95)}
+  50%{opacity:1;transform:translate(-50%,-50%) scale(1.05)}
+}
+
+#scan-line {
+  position:fixed; left:0; right:0; height:1px;
+  background:linear-gradient(90deg, transparent 0%, rgba(155,27,42,0.6) 20%, rgba(196,18,48,0.9) 50%, rgba(155,27,42,0.6) 80%, transparent 100%);
+  box-shadow:0 0 12px rgba(155,27,42,0.8), 0 0 24px rgba(155,27,42,0.3);
+  pointer-events:none; z-index:150; top:0; opacity:0;
+}
+#scan-line.run { animation:scanDown 1.4s cubic-bezier(0.4,0,0.6,1) forwards; }
+@keyframes scanDown {
+  0%{transform:translateY(0);opacity:0} 5%{opacity:1} 95%{opacity:1} 100%{transform:translateY(100vh);opacity:0}
+}
+
+.corner-logo {
+  position:fixed; top:16px; right:16px; z-index:50;
+  opacity:0; pointer-events:none; transition:opacity 0.6s ease;
+}
+.corner-logo.visible { opacity:1; }
+.corner-logo img {
+  width:38px; height:38px; object-fit:contain; display:block;
+  filter:drop-shadow(0 0 6px rgba(155,27,42,0.4));
+  -webkit-mask-image:radial-gradient(ellipse 68% 68% at 50% 50%, black 30%, transparent 100%);
+  mask-image:radial-gradient(ellipse 68% 68% at 50% 50%, black 30%, transparent 100%);
+}
+
+/* WRAPPER */
+.wrapper {
+  position:relative; z-index:10;
+  max-width:680px; width:100%;
+  margin:0 auto;
+  padding:100px clamp(24px,6vw,60px) 120px;
+}
+
+/* HERO */
+.hero {
+  text-align:center;
+  margin-bottom:100px;
+  opacity:0;
+  animation:fadeUp 1s ease forwards 0.4s;
+}
+
+.brand {
+  font-family:'Cinzel', serif; font-size:clamp(11px,2.5vw,13px);
+  letter-spacing:0.6em; color:var(--red); margin-bottom:32px;
+  display:block; -webkit-text-stroke:0.4px var(--red);
+}
+
+.hero-headline {
+  font-weight:300; font-size:clamp(48px,12vw,76px);
+  line-height:1.04; margin-bottom:20px;
+}
+.hero-headline em { font-style:italic; color:var(--red); }
+
+.hero-sub {
+  font-size:clamp(17px,4vw,20px); font-weight:300;
+  color:rgba(240,237,232,0.4); line-height:1.8;
+}
+
+.accent-line {
+  width:36px; height:1px; background:var(--red);
+  margin:32px auto 0; opacity:0; transform:scaleX(0);
+  animation:accentReveal 0.8s ease forwards 1s, accentPulse 3s ease-in-out infinite 2.5s;
+}
+@keyframes accentReveal { to{opacity:1;transform:scaleX(1)} }
+@keyframes accentPulse {
+  0%,100%{transform:scaleX(1);opacity:1} 40%{transform:scaleX(1.6);opacity:.5} 65%{transform:scaleX(.8);opacity:1}
+}
+
+/* SECTIONS */
+.block {
+  margin-bottom:80px;
+  opacity:0; transform:translateY(20px);
+  transition:opacity 0.8s ease, transform 0.8s cubic-bezier(0.16,1,0.3,1);
+}
+.block.visible { opacity:1; transform:translateY(0); }
+
+.divider-line {
+  display:block; height:1px; margin-bottom:28px;
+  background:linear-gradient(90deg, rgba(155,27,42,0.95) 0%, rgba(155,27,42,0.15) 50%, transparent 100%);
+  transform:scaleX(0); transform-origin:left; opacity:0;
+  transition:transform 1.2s cubic-bezier(.16,1,.3,1) 0.1s, opacity 0.8s ease 0.1s;
+}
+.block.visible .divider-line { transform:scaleX(1); opacity:1; }
+
+.section-label {
+  font-family:'Cinzel', serif; font-size:clamp(9px,2vw,10px);
+  letter-spacing:.5em; color:var(--red); margin-bottom:20px;
+  display:block; -webkit-text-stroke:0.4px var(--red);
+}
+
+.statement {
+  font-size:clamp(34px,8vw,50px); font-weight:300;
+  line-height:1.1; margin-bottom:24px;
+}
+.statement em { font-style:italic; color:var(--red); }
+
+.body-text {
+  font-size:clamp(17px,4vw,20px); font-weight:300;
+  line-height:1.9; color:rgba(240,237,232,0.55);
+  margin-bottom:14px;
+}
+.body-text strong { color:var(--white); font-weight:400; }
+.body-text em { color:var(--red); font-style:italic; }
+
+/* STEPS */
+.steps { margin-top:16px; }
+.step {
+  display:flex; gap:20px; align-items:flex-start;
+  padding:16px 0; border-bottom:1px solid rgba(155,27,42,0.1);
+}
+.step:last-child { border-bottom:none; }
+.step-num {
+  font-family:'Cinzel', serif; font-size:9px;
+  letter-spacing:0.4em; color:var(--red);
+  flex-shrink:0; padding-top:5px; min-width:32px;
+}
+.step-text {
+  font-size:clamp(16px,3.5vw,18px); font-weight:300;
+  line-height:1.75; color:rgba(240,237,232,0.55);
+}
+.step-text strong { color:var(--white); font-weight:400; }
+
+/* CLOSING */
+.closing {
+  text-align:center; margin-top:100px; padding-top:60px;
+  border-top:1px solid rgba(155,27,42,0.15);
+  opacity:0; transform:translateY(20px);
+  transition:opacity 0.8s ease, transform 0.8s cubic-bezier(0.16,1,0.3,1);
+}
+.closing.visible { opacity:1; transform:translateY(0); }
+
+.closing-headline {
+  font-size:clamp(34px,8vw,52px); font-weight:300;
+  line-height:1.1; margin-bottom:16px;
+}
+.closing-headline em { font-style:italic; color:var(--red); }
+
+.closing-sub {
+  font-size:clamp(16px,3.5vw,18px); font-weight:300;
+  color:rgba(240,237,232,0.4); line-height:1.8;
+  margin-bottom:40px;
+}
+
+.contact-detail {
+  font-family:'Cinzel', serif; font-size:clamp(9px,2vw,10px);
+  letter-spacing:0.45em; color:rgba(240,237,232,0.25); line-height:3;
+}
+.contact-detail strong {
+  color:var(--white); font-weight:400;
+  font-family:'Cormorant Garamond', serif;
+  font-size:clamp(17px,4vw,20px); letter-spacing:0.1em;
+}
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(16px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+<div class="ambient"></div>
+<div id="scan-line"></div>
+<div class="corner-logo" id="corner-logo">
+  <img src="blaqscale.jpg" alt="BlaqScale">
+</div>
+
+<div class="wrapper">
+
+  <!-- HERO -->
+  <div class="hero">
+    <span class="brand">BLAQSCALE</span>
+    <h1 class="hero-headline">You made<br><em>the right call.</em></h1>
+    <p class="hero-sub">Welcome to the partnership, Talha.</p>
+    <div class="accent-line"></div>
+  </div>
+
+  <!-- WHAT THIS IS -->
+  <div class="block">
+    <span class="divider-line"></span>
+    <span class="section-label">WHAT THIS IS</span>
+    <h2 class="statement">Not a service.<br><em>A growth engine.</em></h2>
+    <p class="body-text">Most agencies sell you activity. Reports. Deliverables that look good and move nothing.</p>
+    <p class="body-text">BlaqScale works differently. <strong>We win when you win.</strong> Every decision inside this partnership is built around one number — your revenue.</p>
+  </div>
+
+  <!-- FIRST 7 DAYS -->
+  <div class="block">
+    <span class="divider-line"></span>
+    <span class="section-label">HOW WE START</span>
+    <h2 class="statement">First <em>7 days.</em></h2>
+    <div class="steps">
+      <div class="step">
+        <span class="step-num">01</span>
+        <div class="step-text"><strong>Access & audit.</strong> We go in, study everything — your current setup, your data, what's working, what's dead.</div>
+      </div>
+      <div class="step">
+        <span class="step-num">02</span>
+        <div class="step-text"><strong>Understand your client.</strong> We study the psychology of who books your fleet. Their pain, their desire. This shapes every word we write.</div>
+      </div>
+      <div class="step">
+        <span class="step-num">03</span>
+        <div class="step-text"><strong>Build the funnel.</strong> Landing page. Booking system. Copy that converts. Everything a lead needs to go from ad to confirmed booking — fast.</div>
+      </div>
+      <div class="step">
+        <span class="step-num">04</span>
+        <div class="step-text"><strong>Launch.</strong> A campaign built to generate revenue — not impressions. Multiple ad variations tested from day one.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW WE OPERATE -->
+  <div class="block">
+    <span class="divider-line"></span>
+    <span class="section-label">HOW WE OPERATE</span>
+    <h2 class="statement">We double down.<br><em>We cut fast.</em></h2>
+    <p class="body-text">Once live, we don't wait. We watch what the data says and we move on it. <strong>What converts gets more budget. What doesn't gets cut.</strong> No attachment to ideas — only to results.</p>
+    <p class="body-text">You'll hear from us when something matters. No noise. And every month, a clean report — every booking, every dirham, the full picture.</p>
+    <p class="body-text">Your channel is <strong>WhatsApp.</strong> We respond within 24 hours. Always.</p>
+  </div>
+
+  <!-- TRANSPARENCY -->
+  <div class="block">
+    <span class="divider-line"></span>
+    <span class="section-label">TRANSPARENCY</span>
+    <h2 class="statement">You see<br><em>everything.</em></h2>
+    <p class="body-text">Full access to the Google Ads dashboard. Every click. Every conversion. Every booking value — tracked, visible, yours. <strong>No black box. No trust us.</strong></p>
+    <p class="body-text">We calculate our 15% on total revenue generated — including bookings through WhatsApp, phone, any channel. You send the full booking summary by the <strong>1st of each month.</strong> We invoice on the 2nd. Payment due the 2nd — hard deadline the 5th.</p>
+    <p class="body-text"><em>Clean. Simple. Built on proof.</em></p>
+  </div>
+
+  <!-- CLOSING -->
+  <div class="closing">
+    <h2 class="closing-headline">The only thing left<br>is <em>execution.</em></h2>
+    <p class="closing-sub">Send admin access. We start the clock.</p>
+    <div class="accent-line" style="margin-top:40px;"></div>
+  </div>
+
+</div>
+
+<script>
+const scanLine = document.getElementById('scan-line');
+setTimeout(() => { scanLine.classList.add('run'); }, 200);
+scanLine.addEventListener('animationend', () => { scanLine.style.display = 'none'; });
+
+setTimeout(() => { document.getElementById('corner-logo').classList.add('visible'); }, 1800);
+
+const blocks = document.querySelectorAll('.block, .closing');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+blocks.forEach(b => observer.observe(b));
+</script>
+</body>
+</html>
