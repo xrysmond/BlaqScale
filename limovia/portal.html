@@ -805,7 +805,7 @@ function render(d){
     const reversed = [...d.updates].reverse();
     uf.innerHTML = reversed.map((u, i) => {
       const realIdx = d.updates.length - 1 - i;
-      const emojis  = ['👍','🔥','✅'];
+      const emojis  = ['👍','🔥','♥️'];
       const reactionBar = emojis.map(e =>
         '<button class="reaction-btn' + (u.reaction === e ? ' selected' : '') + '" onclick="addReaction(' + realIdx + ',\'' + e + '\')">' + e + '</button>'
       ).join('');
