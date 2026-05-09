@@ -1078,10 +1078,6 @@ btnEnter.addEventListener('click', () => {
   setTimeout(() => {
     introView.style.display = 'none';
     introView.classList.remove('active');
-    // Pause decorative beam animations — no longer visible, free the GPU
-    const volTop = document.getElementById('vol-top');
-    if (volTop) volTop.style.animationPlayState = 'paused';
-    volTop.querySelectorAll('.vol-beam').forEach(b => b.style.animationPlayState = 'paused');
     const main = document.getElementById('view-main');
     requestAnimationFrame(() => main.classList.add('active'));
     cornerLogo.classList.add('visible');
