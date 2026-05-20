@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Client Agreement — BlaqScale x Emerald House Interior Design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Cinzel:wght@400;600;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+:root { --black:#000; --red:#9B1B2A; --white:#F0EDE8; }
+
+html, body {
+  width:100%; min-height:100%;
+  background:var(--black); color:var(--white);
+  font-family:'Cormorant Garamond', serif;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+/* GRAIN */
+.grain {
+  position:fixed; inset:0; pointer-events:none; z-index:100;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+}
+
+/* AMBIENT */
+.ambient {
+  position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:80vw; height:80vh;
+  background:radial-gradient(ellipse, rgba(155,27,42,0.07) 0%, transparent 65%);
+  pointer-events:none; z-index:0;
+  animation:ambBreathe 5s ease-in-out infinite;
+}
+@keyframes ambBreathe { 0%,100%{opacity:.5;transform:translate(-50%,-50%) scale(.95)} 50%{opacity:1;transform:translate(-50%,-50%) scale(1.05)} }
+
+/* SCAN LINE */
+#scan-line {
+  position:fixed; left:0; right:0; height:1px;
+  background:linear-gradient(90deg, transparent 0%, rgba(155,27,42,0.6) 20%, rgba(196,18,48,0.9) 50%, rgba(155,27,42,0.6) 80%, transparent 100%);
+  box-shadow:0 0 12px rgba(155,27,42,0.8), 0 0 24px rgba(155,27,42,0.3);
+  pointer-events:none; z-index:150;
+  top:0; opacity:0;
+  animation:scanDown 1.4s cubic-bezier(0.4,0,0.6,1) forwards 0.2s;
+}
+@keyframes scanDown {
+  0%   { transform:translateY(0); opacity:0; }
+  5%   { opacity:1; }
+  95%  { opacity:1; }
+  100% { transform:translateY(100vh); opacity:0; }
+}
+
+/* WRAPPER */
+.wrapper {
+  position:relative; z-index:10;
+  max-width:720px; width:100%;
+  margin:0 auto;
+  padding:80px clamp(24px,6vw,60px) 100px;
+}
+
+/* HEADER */
+.doc-header {
+  text-align:center;
+  margin-bottom:72px;
+  opacity:0;
+  animation:fadeUp 1s ease forwards 0.5s;
+}
+
+.brand-label {
+  font-family:'Cinzel', serif;
+  font-size:clamp(9px,2vw,10px);
+  letter-spacing:0.6em;
+  color:var(--red);
+  -webkit-text-stroke:0.4px var(--red);
+  display:block;
+  margin-bottom:28px;
+}
+
+.doc-title {
+  font-weight:300;
+  font-size:clamp(36px,9vw,58px);
+  line-height:1.05;
+  margin-bottom:8px;
+}
+.doc-title em {
+  font-style:italic;
+  color:var(--red);
+}
+
+.doc-subtitle {
+  font-family:'Cinzel', serif;
+  font-size:clamp(9px,2vw,10px);
+  letter-spacing:0.45em;
+  color:rgba(240,237,232,0.35);
+  margin-top:20px;
+  display:block;
+}
+
+.accent-line {
+  width:36px; height:1px;
+  background:var(--red);
+  margin:32px auto 0;
+  animation:accentReveal 0.8s ease forwards 1s, accentPulse 3s ease-in-out infinite 2.5s;
+  opacity:0; transform:scaleX(0);
+}
+@keyframes accentReveal { to{opacity:1;transform:scaleX(1)} }
+@keyframes accentPulse { 0%,100%{transform:scaleX(1);opacity:1} 40%{transform:scaleX(1.8);opacity:.5} 65%{transform:scaleX(.8);opacity:1} }
+
+/* PARTIES */
+.parties {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:1px;
+  background:rgba(155,27,42,0.2);
+  margin-bottom:64px;
+  opacity:0;
+  animation:fadeUp 1s ease forwards 0.9s;
+}
+.party {
+  background:var(--black);
+  padding:28px 24px;
+}
+.party-role {
+  font-family:'Cinzel', serif;
+  font-size:8px;
+  letter-spacing:0.5em;
+  color:var(--red);
+  margin-bottom:12px;
+  display:block;
+}
+.party-name {
+  font-size:clamp(17px,4vw,20px);
+  font-weight:300;
+  line-height:1.4;
+  color:var(--white);
+}
+.party-company {
+  font-size:clamp(13px,3vw,14px);
+  color:rgba(240,237,232,0.4);
+  margin-top:4px;
+  font-style:italic;
+}
+
+/* DATE */
+.doc-date {
+  font-family:'Cinzel', serif;
+  font-size:8px;
+  letter-spacing:0.45em;
+  color:rgba(240,237,232,0.25);
+  text-align:center;
+  margin-bottom:72px;
+  display:block;
+  opacity:0;
+  animation:fadeUp 0.8s ease forwards 1.1s;
+}
+
+/* SECTIONS */
+.section {
+  margin-bottom:56px;
+  opacity:0;
+  transform:translateY(20px);
+}
+.section.visible {
+  opacity:1;
+  transform:translateY(0);
+  transition:opacity 0.8s ease, transform 0.8s cubic-bezier(0.16,1,0.3,1);
+}
+
+.divider-line {
+  display:block; height:1px; margin-bottom:28px;
+  background:linear-gradient(90deg, rgba(155,27,42,0.95) 0%, rgba(155,27,42,0.15) 50%, transparent 100%);
+  transform:scaleX(0); transform-origin:left; opacity:0;
+  transition:transform 1.2s cubic-bezier(.16,1,.3,1) 0.1s, opacity 0.8s ease 0.1s;
+}
+.section.visible .divider-line { transform:scaleX(1); opacity:1; }
+
+.section-num {
+  font-family:'Cinzel', serif;
+  font-size:8px;
+  letter-spacing:0.5em;
+  color:var(--red);
+  -webkit-text-stroke:0.4px var(--red);
+  display:block;
+  margin-bottom:12px;
+}
+
+.section-title {
+  font-family:'Cinzel', serif;
+  font-size:clamp(11px,2.5vw,13px);
+  letter-spacing:0.3em;
+  color:var(--white);
+  margin-bottom:24px;
+  font-weight:400;
+}
+
+.section-body {
+  font-size:clamp(17px,4vw,19px);
+  font-weight:300;
+  line-height:1.9;
+  color:rgba(240,237,232,0.55);
+}
+.section-body strong {
+  color:var(--white);
+  font-weight:400;
+}
+.section-body em {
+  color:var(--red);
+  font-style:italic;
+}
+
+/* ITEMS LIST */
+.items {
+  list-style:none;
+  margin-top:12px;
+}
+.items li {
+  font-size:clamp(17px,4vw,19px);
+  font-weight:300;
+  line-height:1.85;
+  color:rgba(240,237,232,0.55);
+  padding:10px 0;
+  border-bottom:1px solid rgba(155,27,42,0.1);
+  display:flex;
+  gap:16px;
+  align-items:flex-start;
+}
+.items li:last-child { border-bottom:none; }
+.items li::before {
+  content:'';
+  display:block;
+  width:4px; height:4px;
+  background:var(--red);
+  border-radius:50%;
+  flex-shrink:0;
+  margin-top:11px;
+}
+.items li strong { color:var(--white); font-weight:400; }
+
+/* PAYMENT BLOCK */
+.payment-block {
+  background:rgba(155,27,42,0.05);
+  border:1px solid rgba(155,27,42,0.2);
+  padding:28px 24px;
+  margin-top:20px;
+}
+.payment-row {
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  padding:12px 0;
+  border-bottom:1px solid rgba(155,27,42,0.1);
+  gap:16px;
+}
+.payment-row:last-child { border-bottom:none; }
+.payment-label {
+  font-family:'Cinzel', serif;
+  font-size:8px;
+  letter-spacing:0.4em;
+  color:rgba(240,237,232,0.35);
+}
+.payment-value {
+  font-size:clamp(17px,4vw,20px);
+  font-weight:300;
+  color:var(--white);
+  text-align:right;
+}
+.payment-value em { color:var(--red); font-style:normal; }
+
+/* SIGNATURE BLOCK */
+.signatures {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:32px;
+  margin-top:80px;
+  padding-top:48px;
+  border-top:1px solid rgba(155,27,42,0.2);
+  opacity:0;
+  animation:fadeUp 1s ease forwards 1.4s;
+}
+.sig-block { }
+.sig-role {
+  font-family:'Cinzel', serif;
+  font-size:8px;
+  letter-spacing:0.5em;
+  color:var(--red);
+  margin-bottom:8px;
+  display:block;
+}
+.sig-name {
+  font-size:clamp(16px,4vw,18px);
+  font-weight:300;
+  color:var(--white);
+  margin-bottom:4px;
+}
+.sig-company {
+  font-size:13px;
+  color:rgba(240,237,232,0.35);
+  font-style:italic;
+  margin-bottom:24px;
+}
+.sig-line {
+  width:100%; height:1px;
+  background:rgba(155,27,42,0.3);
+  margin-top:40px;
+}
+.sig-date-label {
+  font-family:'Cinzel', serif;
+  font-size:7px;
+  letter-spacing:0.4em;
+  color:rgba(240,237,232,0.2);
+  margin-top:8px;
+  display:block;
+}
+
+/* FOOTER */
+/* CORNER LOGO */
+.corner-logo {
+  position:fixed; top:16px; right:16px; z-index:50;
+  opacity:0;
+  animation:fadeUp 1s ease forwards 0.3s;
+  pointer-events:none;
+}
+.corner-logo img {
+  width:38px; height:38px; object-fit:contain; display:block;
+  filter:drop-shadow(0 0 6px rgba(155,27,42,0.4));
+  -webkit-mask-image:radial-gradient(ellipse 68% 68% at 50% 50%, black 30%, transparent 100%);
+  mask-image:radial-gradient(ellipse 68% 68% at 50% 50%, black 30%, transparent 100%);
+}
+
+.doc-footer {
+  text-align:center;
+  margin-top:72px;
+  opacity:0;
+  animation:fadeUp 1s ease forwards 1.6s;
+}
+.footer-brand {
+  font-family:'Cinzel', serif;
+  font-size:8px;
+  letter-spacing:0.6em;
+  color:rgba(155,27,42,0.4);
+}
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(16px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+.agree-section {
+  margin-top: 64px;
+  padding-top: 48px;
+  border-top: 1px solid rgba(155,27,42,0.2);
+  opacity: 0;
+  animation: fadeUp 1s ease forwards 1.8s;
+}
+.agree-label {
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  letter-spacing: 0.5em;
+  color: var(--red);
+  display: block;
+  margin-bottom: 24px;
+}
+.agree-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+@media(max-width:520px){ .agree-inputs{ grid-template-columns:1fr; } }
+.agree-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(155,27,42,0.3);
+  color: var(--white);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(16px,4vw,18px);
+  font-weight: 300;
+  padding: 10px 0;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.3s ease;
+}
+.agree-input::placeholder { color: rgba(240,237,232,0.2); }
+.agree-input:focus { border-bottom-color: var(--red); }
+.agree-btn {
+  display: block;
+  width: 100%;
+  padding: 18px 24px;
+  background: transparent;
+  border: 1px solid rgba(155,27,42,0.5);
+  color: var(--white);
+  font-family: 'Cinzel', serif;
+  font-size: clamp(10px,2.5vw,12px);
+  letter-spacing: 0.4em;
+  cursor: pointer;
+  transition: background 0.3s ease, border-color 0.3s ease;
+  margin-top: 8px;
+}
+.agree-btn:hover { background: rgba(155,27,42,0.1); border-color: var(--red); }
+.agree-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.agree-success {
+  display: none;
+  text-align: center;
+  padding: 32px 0;
+}
+.agree-success .check {
+  font-size: 32px;
+  color: var(--red);
+  display: block;
+  margin-bottom: 16px;
+}
+.agree-success p {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  color: rgba(240,237,232,0.4);
+}
+.agree-error {
+  display: none;
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  color: var(--red);
+  margin-top: 12px;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<div class="corner-logo"><img src="../blaqscale.jpg" alt="BlaqScale"></div>
+<div class="grain"></div>
+<div class="ambient"></div>
+<div id="scan-line"></div>
+
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <header class="doc-header">
+    <span class="brand-label">BLAQSCALE</span>
+    <h1 class="doc-title">Client<br><em>Agreement</em></h1>
+    <span class="doc-subtitle">Confidential — Revenue Growth Partnership</span>
+    <div class="accent-line"></div>
+  </header>
+
+  <!-- DATE -->
+  <span class="doc-date">MAY 2026</span>
+
+  <!-- PARTIES -->
+  <div class="parties">
+    <div class="party">
+      <span class="party-role">SERVICE PROVIDER</span>
+      <div class="party-name">Waeven Xrysmond</div>
+      <div class="party-company">BlaqScale</div>
+    </div>
+    <div class="party">
+      <span class="party-role">CLIENT</span>
+      <div class="party-name">Faraz Vatani</div>
+      <div class="party-company">Emerald House Interior Design<br>emeraldhouseintdesign.com</div>
+    </div>
+  </div>
+
+  <!-- SECTION 1 -->
+  <div class="section">
+    <span class="divider-line"></span>
+    <span class="section-num">01</span>
+    <div class="section-title">SCOPE OF WORK</div>
+    <p class="section-body">BlaqScale will handle the following for Emerald House Interior Design:</p>
+    <ul class="items">
+      <li><span>Google Ads campaign setup, management, and ongoing optimization targeting high-intent clients seeking interior design, fit out, renovation, furnishing, and pool construction in Dubai</span></li>
+      <li><span>Funnel buildout — landing page designed to convert ad traffic into <strong>qualified project inquiries and confirmed clients</strong></span></li>
+      <li><span>Full tracking setup: every click, every lead, every closed project value recorded and visible to the client</span></li>
+      <li><span>Monthly performance reporting with <strong>complete transparency</strong> — no black box</span></li>
+    </ul>
+    <p class="section-body" style="margin-top:24px;">The goal is to generate qualified high-value project clients and <em>measurable revenue growth</em> for Emerald House.</p>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="section">
+    <span class="divider-line"></span>
+    <span class="section-num">02</span>
+    <div class="section-title">DELIVERABLES & TIMELINE</div>
+    <ul class="items">
+      <li><span>Campaign goes live upon agreement signing and funnel build completion</span></li>
+      <li><span>Client receives full, real-time access to the Google Ads dashboard at all times</span></li>
+      <li><span>BlaqScale retains full ownership of the funnel until the setup fee is received</span></li>
+    </ul>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="section">
+    <span class="divider-line"></span>
+    <span class="section-num">03</span>
+    <div class="section-title">COMPENSATION</div>
+    <div class="payment-block">
+      <div class="payment-row">
+        <span class="payment-label">SETUP FEE (ONE-TIME)</span>
+        <span class="payment-value"><em>3,000 AED</em> — due upon first client close</span>
+      </div>
+      <div class="payment-row">
+        <span class="payment-label">COMMISSION</span>
+        <span class="payment-value"><em>8% fixed</em> of every closed project value</span>
+      </div>
+      <div class="payment-row">
+        <span class="payment-label">FIRST CLOSE PAYMENT</span>
+        <span class="payment-value"><em>8%</em> commission + <em>3,000 AED</em> setup fee — paid <em>immediately</em> upon project close</span>
+      </div>
+      <div class="payment-row">
+        <span class="payment-label">ONGOING PAYMENT CYCLE</span>
+        <span class="payment-value">Project summary due <em>1st</em> of each month</span>
+      </div>
+      <div class="payment-row">
+        <span class="payment-label">INVOICE ISSUED</span>
+        <span class="payment-value"><em>2nd</em> of each month</span>
+      </div>
+      <div class="payment-row">
+        <span class="payment-label">PAYMENT DUE</span>
+        <span class="payment-value"><em>2nd</em> — hard deadline <em>5th</em></span>
+      </div>
+      <div class="payment-row">
+        <span class="payment-label">PAYMENT METHOD</span>
+        <span class="payment-value">USDT (Cryptocurrency)<br><span style="font-size:13px;color:rgba(240,237,232,0.35);">Wallet address sent with each invoice</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div class="section">
+    <span class="divider-line"></span>
+    <span class="section-num">04</span>
+    <div class="section-title">TRANSPARENCY & REPORTING</div>
+    <ul class="items">
+      <li><span>Client has full, real-time access to Google Ads dashboard at all times</span></li>
+      <li><span>Every conversion is tracked with its <strong>exact project value and lead source</strong></span></li>
+      <li><span>Monthly report delivered summarizing: total ad spend, total clients generated, total attributed project revenue, and BlaqScale's 8% commission for that month</span></li>
+      <li><span>All tracking data serves as the primary reference in any attribution dispute — see Section 06 for full dispute process</span></li>
+    </ul>
+  </div>
+
+  <!-- SECTION 5 -->
+  <div class="section">
+    <span class="divider-line"></span>
+    <span class="section-num">05</span>
+    <div class="section-title">CLIENT RESPONSIBILITIES</div>
+    <ul class="items">
+      <li><span>Provide <strong>Admin access</strong> to website for funnel integration</span></li>
+      <li><span>Provide <strong>Admin access</strong> to Google Ads account (or approve new account creation)</span></li>
+      <li><span>Report all projects that close from <strong>BlaqScale-attributed leads</strong> within the attribution window, with the confirmed project value</span></li>
+      <li><span>Provide a monthly project summary by the <strong>1st of each month</strong> showing every BlaqScale-attributed closed deal and its confirmed value</span></li>
+      <li><span>Allocate agreed monthly ad budget — separate from BlaqScale's commission</span></li>
+      <li><span>Respond to BlaqScale communications within <strong>24 hours</strong></span></li>
+    </ul>
+  </div>
+
+  <!-- SECTION 6 -->
+  <div class="section">
+    <span class="divider-line"></span>
+    <span class="section-num">06</span>
+    <div class="section-title">ATTRIBUTION & COMMISSION SCOPE</div>
+    <p class="section-body">The 8% commission applies <em>only</em> to projects directly generated and attributable to BlaqScale campaigns. The following are <strong>excluded</strong> from commission scope:</p>
+    <ul class="items">
+      <li><span>Existing Emerald House clients prior to this agreement</span></li>
+      <li><span>Referrals sourced independently by Emerald House</span></li>
+      <li><span>Repeat clients not re-acquired through BlaqScale campaigns</span></li>
+      <li><span>Any project generated entirely outside of BlaqScale's funnel or ad campaigns</span></li>
+    </ul>
+    <p class="section-body" style="margin-top:24px;"><strong>Attribution Window:</strong> A lead is considered BlaqScale-attributed for <em>120 days</em> from the date of first contact through the BlaqScale funnel. Any project that closes within this window is commissionable at 8%.</p>
+    <p class="section-body" style="margin-top:16px;"><strong>Multi-channel leads:</strong> If a lead first contacts Emerald House through a BlaqScale ad or landing page, they remain BlaqScale-attributed regardless of the channel through which the deal ultimately closes (WhatsApp, phone, in-person).</p>
+    <p class="section-body" style="margin-top:16px;"><strong>Dispute process:</strong> If attribution of a lead is disputed, both parties will refer to the tracking data in the shared Google Ads dashboard and CRM records as the source of truth. If no resolution is reached within 7 days, both parties agree to review the original lead entry timestamp together and resolve in good faith.</p>
+  </div>
+
+  <!-- SECTION 7 -->
+  <div class="section">
+    <span class="divider-line"></span>
+    <span class="section-num">07</span>
+    <div class="section-title">DATA OWNERSHIP</div>
+    <ul class="items">
+      <li><span>All lead data, customer information, and campaign data collected through BlaqScale campaigns remain the <strong>sole property of Emerald House Interior Design</strong></span></li>
+      <li><span>BlaqScale will not share, sell, or use this data for any purpose outside of delivering services under this agreement</span></li>
+      <li><span>BlaqScale retains ownership of the funnel infrastructure and creative assets until the 3,000 AED setup fee is received — after which all assets transfer fully to Emerald House</span></li>
+    </ul>
+  </div>
+
+  <!-- SECTION 8 -->
+  <div class="section">
+    <span class="divider-line"></span>
+    <span class="section-num">08</span>
+    <div class="section-title">TERMS & TERMINATION</div>
+    <ul class="items">
+      <li><span>This agreement begins upon signing by both parties</span></li>
+      <li><span>Either party may terminate with <strong>14 days written notice</strong></span></li>
+      <li><span>Any BlaqScale-attributed lead that was in active negotiation or contact prior to termination and closes within <strong>60 days</strong> after the termination date remains commissionable at 8%</span></li>
+      <li><span>BlaqScale is not responsible for projects not fulfilled by the client after lead generation</span></li>
+      <li><span>Ad spend budget is the client's responsibility and is separate from BlaqScale's fees</span></li>
+    </ul>
+  </div>
+
+  <!-- SECTION 9 -->
+  <div class="section">
+    <span class="divider-line"></span>
+    <span class="section-num">09</span>
+    <div class="section-title">CONFIDENTIALITY</div>
+    <p class="section-body">Both parties agree to keep all shared information strictly confidential. This includes:</p>
+    <ul class="items">
+      <li><span>Internal business information, project values, client names, and pricing shared by either party</span></li>
+      <li><span>Account credentials, campaign data, funnel structure, and conversion data</span></li>
+      <li><span>The terms and existence of this agreement</span></li>
+    </ul>
+    <p class="section-body" style="margin-top:24px;">Neither party shall disclose confidential information to any third party without prior written consent. This obligation survives termination of this agreement.</p>
+  </div>
+
+  <!-- SECTION 10 -->
+  <div class="section">
+    <span class="divider-line"></span>
+    <span class="section-num">10</span>
+    <div class="section-title">GOVERNING LAW & JURISDICTION</div>
+    <p class="section-body">This agreement is governed by and construed in accordance with the laws of the <em>United Arab Emirates</em>, specifically under the jurisdiction of <em>Dubai</em>. Any disputes arising from this agreement that cannot be resolved in good faith between the parties shall be subject to the courts of Dubai, UAE.</p>
+  </div>
+
+  <!-- SIGNATURES -->
+  <div class="signatures">
+    <div class="sig-block">
+      <span class="sig-role">SERVICE PROVIDER</span>
+      <div class="sig-name">Waeven Xrysmond</div>
+      <div class="sig-company">BlaqScale</div>
+      <div class="sig-line"></div>
+    </div>
+    <div class="sig-block">
+      <span class="sig-role">CLIENT</span>
+      <div class="sig-name">Faraz Vatani</div>
+      <div class="sig-company">Emerald House Interior Design</div>
+      <div class="sig-line"></div>
+    </div>
+  </div>
+
+  <!-- I AGREE -->
+  <div class="agree-section">
+    <span class="agree-label">ELECTRONIC AGREEMENT</span>
+    <div class="agree-inputs">
+      <input class="agree-input" id="ag-name" type="text" placeholder="Full Name" autocomplete="name">
+      <input class="agree-input" id="ag-email" type="email" placeholder="Email Address" autocomplete="email">
+    </div>
+    <button class="agree-btn" id="ag-btn" onclick="submitAgreement()">I AGREE TO THESE TERMS</button>
+    <div class="agree-error" id="ag-error">Please enter your full name and email.</div>
+    <div class="agree-success" id="ag-success">
+      <span class="check">✦</span>
+      <p>AGREEMENT CONFIRMED — A RECORD HAS BEEN SENT</p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="doc-footer">
+    <span class="footer-brand">BLAQSCALE — CONFIDENTIAL</span>
+  </div>
+
+</div>
+
+<script>
+// EmailJS init
+emailjs.init('YCMq5SsKkY7yFppie');
+
+async function submitAgreement() {
+  const name = document.getElementById('ag-name').value.trim();
+  const email = document.getElementById('ag-email').value.trim();
+  const errorEl = document.getElementById('ag-error');
+  const btn = document.getElementById('ag-btn');
+
+  errorEl.style.display = 'none';
+
+  if (!name || !email || !email.includes('@')) {
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'PROCESSING...';
+
+  let ip = 'unavailable';
+  try {
+    const res = await fetch('https://api.ipify.org?format=json');
+    const data = await res.json();
+    ip = data.ip;
+  } catch(e) {}
+
+  const timestamp = new Date().toLocaleString('en-GB', {
+    timeZone: 'Asia/Dubai',
+    day:'2-digit', month:'long', year:'numeric',
+    hour:'2-digit', minute:'2-digit', second:'2-digit'
+  }) + ' (Dubai time)';
+
+  emailjs.send('service_rn3v2t3', 'template_tfobtm5', {
+    name: name,
+    email: email,
+    timestamp: timestamp,
+    ip: ip,
+    title: 'BlaqScale x Emerald House Interior Design'
+  }).then(() => {
+    document.getElementById('ag-btn').style.display = 'none';
+    document.getElementById('ag-name').disabled = true;
+    document.getElementById('ag-email').disabled = true;
+    document.getElementById('ag-success').style.display = 'block';
+  }).catch(() => {
+    btn.disabled = false;
+    btn.textContent = 'I AGREE TO THESE TERMS';
+    errorEl.textContent = 'Something went wrong. Try again.';
+    errorEl.style.display = 'block';
+  });
+}
+const sections = document.querySelectorAll('.section');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.12 });
+sections.forEach(s => observer.observe(s));
+
+// Remove scan line after animation
+const scanLine = document.getElementById('scan-line');
+if (scanLine) {
+  scanLine.addEventListener('animationend', () => { scanLine.style.display = 'none'; });
+}
+</script>
+</body>
+</html>
