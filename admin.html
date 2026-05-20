@@ -791,10 +791,12 @@ function renderAll() {
         ? '<span class="update-seen">SEEN · ' + (u.seen_at || '') + '</span>'
         : '<span class="update-unseen">UNSEEN</span>';
       const reactionBadge = u.reaction ? '<span class="update-reaction">' + u.reaction + '</span>' : '';
+      const timeStr = u.time ? ' · ' + u.time : '';
+      const formattedMsg = (u.message || '').replace(/\n/g, '<br>');
       return '<div class="update-row">'
         + '<div class="update-info">'
-        + '<strong>' + u.message + '</strong>'
-        + '<div class="update-meta"><span class="update-date">' + u.date + '</span>' + seenBadge + reactionBadge + '</div>'
+        + '<strong style="white-space:pre-wrap">' + formattedMsg + '</strong>'
+        + '<div class="update-meta"><span class="update-date">' + u.date + timeStr + '</span>' + seenBadge + reactionBadge + '</div>'
         + '</div>'
         + '<button class="del-btn" onclick="deleteUpdate(' + realIdx + ')">×</button>'
         + '</div>';
@@ -837,9 +839,11 @@ document.getElementById('btn-add-update').addEventListener('click', async functi
   const msg = document.getElementById('f-update-msg').value.trim();
   if (!msg) { toast('WRITE AN UPDATE FIRST'); return; }
   this.disabled = true;
-  const dateStr = new Date().toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'});
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'});
+  const timeStr = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
   if (!DATA.updates) DATA.updates = [];
-  DATA.updates.push({ date:dateStr, message:msg, seen:false, seen_at:null, reaction:null });
+  DATA.updates.push({ date:dateStr, time:timeStr, message:msg, seen:false, seen_at:null, reaction:null });
   try {
     await saveData();
     document.getElementById('f-update-msg').value = '';
