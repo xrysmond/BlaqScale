@@ -266,7 +266,19 @@ html, body {
 .update-item:last-child { border-bottom:none; }
 .update-top { display:flex; gap:22px; align-items:flex-start; }
 .update-date { font-family:'Cinzel',serif; font-size:7px; letter-spacing:.35em; color:rgba(240,237,232,.28); flex-shrink:0; padding-top:5px; min-width:110px; line-height:1.6; }
-.update-msg { font-size:clamp(16px,3.5vw,19px); font-weight:300; color:rgba(240,237,232,.78); line-height:1.75; }
+.unread-badge {
+  display:none;
+  background:var(--red);
+  color:var(--white);
+  font-family:'Cinzel',serif;
+  font-size:8px;
+  letter-spacing:0.2em;
+  padding:2px 7px;
+  border-radius:20px;
+  margin-left:10px;
+  vertical-align:middle;
+}
+.update-msg { white-space: pre-wrap; }font-size:clamp(16px,3.5vw,19px); font-weight:300; color:rgba(240,237,232,.78); line-height:1.75; }
 .update-msg strong { color:var(--white); font-weight:400; }
 
 /* REACTIONS */
@@ -449,7 +461,7 @@ html, body {
 
     <div class="dash-section" id="sec-updates">
       <span class="dash-divider"></span>
-      <span class="dash-section-label">LATEST UPDATES</span>
+      <span class="dash-section-label">LATEST UPDATES<span class="unread-badge" id="unread-badge"></span></span>
       <div id="updates-feed"><span class="loading-state">NO UPDATES YET</span></div>
     </div>
 
@@ -639,10 +651,13 @@ async function loadData(){
 
 async function markSeen(){
   if (!DATA || !DATA.updates || !DATA.updates.length) return;
-  const now = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  const timeStr = now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  const seenAt = dateStr + ' ' + timeStr;
   let changed = false;
   const updated = DATA.updates.map(u => {
-    if (!u.seen) { changed = true; return Object.assign({}, u, {seen:true, seen_at:now}); }
+    if (!u.seen) { changed = true; return Object.assign({}, u, {seen:true, seen_at:seenAt}); }
     return u;
   });
   if (changed) {
@@ -681,6 +696,10 @@ function render(d){
   /* updates */
   const uf = document.getElementById('updates-feed');
   if (d.updates && d.updates.length) {
+    const unread = d.updates.filter(u => !u.seen).length;
+    const unreadBadge = document.getElementById('unread-badge');
+    if (unreadBadge) unreadBadge.textContent = unread > 0 ? unread : '';
+    if (unreadBadge) unreadBadge.style.display = unread > 0 ? 'inline-block' : 'none';
     const reversed = [...d.updates].reverse();
     uf.innerHTML = reversed.map((u, i) => {
       const realIdx = d.updates.length - 1 - i;
@@ -688,10 +707,12 @@ function render(d){
       const reactionBar = emojis.map(e =>
         '<button class="reaction-btn' + (u.reaction === e ? ' selected' : '') + '" onclick="addReaction(' + realIdx + ',\'' + e + '\')">' + e + '</button>'
       ).join('');
+      const formattedMsg = (u.message || '').replace(/\n/g, '<br>');
+      const timeStr = u.time ? ' · ' + u.time : '';
       return '<div class="update-item">'
         + '<div class="update-top">'
-        + '<span class="update-date">' + u.date.toUpperCase() + '</span>'
-        + '<span class="update-msg">' + u.message + '</span>'
+        + '<span class="update-date">' + u.date.toUpperCase() + timeStr + '</span>'
+        + '<span class="update-msg">' + formattedMsg + '</span>'
         + '</div>'
         + '<div class="reaction-bar">' + reactionBar + '</div>'
         + '</div>';
